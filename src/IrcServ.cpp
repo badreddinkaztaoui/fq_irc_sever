@@ -57,8 +57,7 @@ void IrcServ::createSocket() {
         exit(1);
     }
 
-    int flags = fcntl(serverSocket_, F_GETFL, 0);
-    fcntl(serverSocket_, F_SETFL, flags | O_NONBLOCK);
+    fcntl(serverSocket_, F_SETFL, O_NONBLOCK);
 }
 
 void IrcServ::setupEpoll() {
@@ -110,8 +109,7 @@ void IrcServ::acceptClient() {
     }
 
     // Set non-blocking
-    int flags = fcntl(clientFd, F_GETFL, 0);
-    fcntl(clientFd, F_SETFL, flags | O_NONBLOCK);
+    fcntl(clientFd, F_SETFL, O_NONBLOCK);
 
     epoll_event event;
     event.events = EPOLLIN | EPOLLET;
@@ -161,10 +159,7 @@ void IrcServ::handleClientMsg(int clientFd) {
         handleClientDisconnection(clientFd);
         clientBuffers.erase(clientFd);
         return;
-    } else if (bytesRead < 0 && errno != EAGAIN) {
-        std::cerr << "Failed to receive message from client: " << strerror(errno) << std::endl;
-        handleClientDisconnection(clientFd);
-        clientBuffers.erase(clientFd);
+    } else {
         return;
     }
 }

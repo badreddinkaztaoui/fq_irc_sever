@@ -44,11 +44,10 @@ std::string handleMode(Channel* channel, std::map<int, Client*>& clients, Reques
             }
             break;
         case 'k':
-            channel->setHasPassword(set);
             if (set && request.args.size() < 3) {
                 return "\033[1;31m\tUsage: /MODE <channel> +k <password>\033[0m\n";
             }
-            if (set) {
+            else if (set) {
                 channel->setHasPassword(true);
                 channel->setPassword(request.args[2]);
                 sendToChannel(channel->getName(), "\033[1;32m\tChannel password has been set\033[0m\n", clients, 0);

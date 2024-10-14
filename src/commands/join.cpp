@@ -59,7 +59,7 @@ std::string IrcServ::join(Request request, int fd) {
     if (!findChannel(channel, this->channels))
         createChannel(channel, fd);
     else {
-        if (this->channels[channel]->getHasPassword()) {
+        if (this->channels[channel]->getHasPassword() && !this->channels[channel]->getPassword().empty()) {
             if (request.args.size() < 2)
                 return "\033[1;31m\tChannel is password protected, use /join #channel <password>\033[0m\n";
             response = handleChannelPassword(this->channels, channel, request.args[1]);
